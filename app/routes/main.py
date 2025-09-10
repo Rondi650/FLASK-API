@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from app.models.user import LoginPayload
 from pydantic import ValidationError
+from app import db
+from bson import ObjectId
 
 main_bp = Blueprint('main_bp', __name__)
 
@@ -24,7 +26,12 @@ def login():
 # RF: O sistema deve permitir listagem de todos os produtos
 @main_bp.route('/products', methods=['GET'])
 def get_products():
-    return jsonify({"message":"Esta é a rota de listagem dos produtos"})
+    products_cursor = db.products.find({})
+    products_list = []
+    for products in products_cursor:
+        products['_id'] = str(products['_id'])
+        products_list.append(products)
+    return jsonify(products_list)
 
 # RF: O sistema deve permitir a criacao de um novo produto
 @main_bp.route('/products', methods=['POST'])
