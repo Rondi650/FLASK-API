@@ -39,9 +39,21 @@ def create_product():
     return jsonify({"message":"Esta é a rota de criação de produto"})
 
 # RF: O sistema deve permitir a visualizacao dos detalhes de um unico produto
-@main_bp.route('/product/<int:product_id>', methods=['GET'])
+@main_bp.route('/product/<string:product_id>', methods=['GET'])
 def get_product_by_id(product_id):
-    return jsonify({"message":f"Esta é a rota de visualizacao do detalhe do id do produto {product_id}"})
+    try:
+        oid = ObjectId(product_id)
+    except Exception as e:
+        return jsonify({"menssage": f"Erro ao transformar o {product_id} em ObjectID {e}"})
+
+    product = db.products.find_one({'_id': oid})
+    
+    if product:
+        product['_id'] = str(product['_id'])
+        return jsonify(product)
+    else:
+        return jsonify({"error": f"Produto com o id: {product_id} - Não encontrado"})
+    
 
 # RF: O sistema deve permitir a atualizacao de um unico produto e produto existente
 @main_bp.route('/product/<int:product_id>', methods=['PUT'])
