@@ -3,6 +3,7 @@ from app.models.user import LoginPayload
 from pydantic import ValidationError
 from app import db
 from bson import ObjectId
+from app.models.products import *
 
 main_bp = Blueprint('main_bp', __name__)
 
@@ -27,10 +28,13 @@ def login():
 @main_bp.route('/products', methods=['GET'])
 def get_products():
     products_cursor = db.products.find({})
-    products_list = []
-    for products in products_cursor:
-        products['_id'] = str(products['_id'])
-        products_list.append(products)
+    products_list = []  # Inicializa a lista vazia
+    
+    for product in products_cursor:  # Loop sobre cada produto
+        # Cria o modelo Pydantic e converte para dicionário
+        product_model = ProductDBModel(**product).model_dump(by_alias=True, exclude_none=True)
+        # Adiciona o dicionário à lista
+        products_list.append(product_model)
     return jsonify(products_list)
 
 # RF: O sistema deve permitir a criacao de um novo produto
@@ -49,12 +53,11 @@ def get_product_by_id(product_id):
     product = db.products.find_one({'_id': oid})
     
     if product:
-        product['_id'] = str(product['_id'])
-        return jsonify(product)
+        product_model = ProductDBModel(**product).model_dump(by_alias=True, exclude_none=True)
+        return jsonify(product_model)
     else:
         return jsonify({"error": f"Produto com o id: {product_id} - Não encontrado"})
     
-
 # RF: O sistema deve permitir a atualizacao de um unico produto e produto existente
 @main_bp.route('/product/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
