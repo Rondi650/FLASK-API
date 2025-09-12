@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from datetime import date
+from datetime import datetime
 
 class Sale(BaseModel):
-    sale_date: date
+    sale_date: datetime
     product_id: str
     quantity: int
     total_value: float
