@@ -5,11 +5,10 @@ from app import db
 from bson import ObjectId
 from app.models.products import *
 from app.decorators import token_required
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from app.models.sales import Sale 
 import jwt
 import csv
-import os
 import io
 
 main_bp = Blueprint('main_bp', __name__)

@@ -14,9 +14,7 @@ def create_app():
     except Exception as e:
         print(f"Erro ao realizar a conexao com o banco de dados: {e}")
         
-    from app.routes.category_routes import category_bp
     from app.routes.main import main_bp
     app.register_blueprint(main_bp)
-    app.register_blueprint(category_bp)    
     
     return app

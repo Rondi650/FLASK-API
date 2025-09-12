@@ -15,8 +15,8 @@ class Product(BaseModel):
     )
 
 class ProductDBModel(Product):
-    def model_dump(self, *, mode='python', include=None, exclude=None, context=None, by_alias=None, exclude_unset=False, exclude_defaults=False, exclude_none=False, round_trip=False):
-        data = super().model_dump(mode=mode, include=include, exclude=exclude, context=context, by_alias=by_alias, exclude_unset=exclude_unset, exclude_defaults=exclude_defaults, exclude_none=exclude_none, round_trip=round_trip)
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
         if self.id:
             data["_id"] = str(data["_id"])
         return data
