@@ -54,7 +54,8 @@ def get_products():
 @token_required
 def create_product(token):
     try:
-        product = Product(**request.get_json())
+        dados = request.get_json()
+        product = Product(**dados)
     except ValidationError as e:
          return jsonify({"error":e.errors()})  
      
@@ -85,7 +86,8 @@ def get_product_by_id(product_id):
 def update_product(token, product_id):
     try:
         oid = ObjectId(product_id)
-        update_data = UpdateProduct(**request.get_json())
+        dados = request.get_json()
+        update_data = UpdateProduct(**dados)
         update_result = db.products.update_one(
             {"_id": oid},
             {"$set": update_data.model_dump(exclude_unset=True)}
